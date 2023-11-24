@@ -7,7 +7,7 @@ subnet_cidr_blocks=("192.168.0.0/23" "192.168.2.0/24" "192.168.3.0/25" "192.168.
 department_names=("ingenieria" "desarrollo" "mantenimiento" "soporte")
 
 # Crear VPC
-vpc_id=$(aws ec2 create-vpc --cidr-block $vpc_cidr_block --query 'Vpc.VpcId' --output text --region $region)
+vpc_id=$(aws ec2 create-vpc --cidr-block $vpc_cidr_block --amazon-provided-ipv6-cidr-block --query 'Vpc.VpcId' --output text --region $region)
 echo "VPC creada con ID: $vpc_id"
 
 # Habilitar la resolución DNS y asignar un nombre a la VPC
@@ -21,11 +21,11 @@ for ((i=0; i<${#subnet_cidr_blocks[@]}; i++)); do
     department_name=${department_names[$i]}
     
     # Crear subred
-    subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone $regiona --query 'Subnet.SubnetId' --output text --region $region)
+    subnet_id=$(aws ec2 create-subnet --vpc-id $vpc_id --cidr-block $subnet_cidr --availability-zone ${region}a --query 'Subnet.SubnetId' --output text --region $region)
     echo "Subred ($department_name) creada con ID: $subnet_id"
     
     # Crear máquina EC2
-    instance_id=$(aws ec2 run-instances --image-id ami-xxxxxxxxxxxxxxxxx --instance-type t2.micro --subnet-id $subnet_id --query 'Instances[0].InstanceId' --output text --region $region)
+    instance_id=$(aws ec2 run-instances --image-id ami-0230bd60aa48260c6 --instance-type t2.micro --subnet-id $subnet_id --query 'Instances[0].InstanceId' --output text --region $region)
     echo "Máquina EC2 ($department_name) creada con ID: $instance_id"
     
     # Asignar nombre a la máquina EC2
